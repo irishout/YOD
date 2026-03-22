@@ -1,3 +1,5 @@
 /.env
 /venv
 /media
+meta_info.odt
+.DS_Store
