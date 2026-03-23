@@ -1,18 +1,19 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import TemplateView, DeleteView
+from django.views.generic import TemplateView, DetailView
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from .models import Category, Product, Size
 from django.db.models import Q
 
 class IndexView(TemplateView):
-    template_name = 'main/base_html'
+    template_name = 'main/base.html'
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['current_category'] = None
+        return context
     
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -26,13 +27,14 @@ class CatalogView(TemplateView):
 
     FILTER_MAPPING = {
         'color': lambda queryset, value: queryset.filter(color__iexact=value),
-        'min_price': lambda queryset, value: queryset.filter(price__gte=value),
+        'min_price': lambda queryset, value: queryset.filter(price__gte=value) if value>0 else queryset,
         'max_price': lambda queryset, value: queryset.filter(price__lte=value),
         'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value),
     }
 
     def get_context_data(self, **kwargs):
-        context = self.get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+
         category_slug = kwargs.get('category_slug')
         categories = Category.objects.all()
         products = Product.objects.all().order_by('-created_at')
@@ -45,7 +47,7 @@ class CatalogView(TemplateView):
         query = self.request.GET.get('q')
         if query:
             products = products.filter(
-                Q(name_icontains=query) | Q(description_icontains=query)
+                Q(name__icontains=query) | Q(description__icontains=query)
             )            
     
         filter_params = {}
@@ -98,7 +100,7 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
         context['categories'] = Category.objects.all()
-        context['rekated_products'] = Product.objects.filter(
+        context['related_products'] = Product.objects.filter(
             category=product.category
         ).exclude(id=product.id)[:4]
         context['current_category'] = product.category.slug
