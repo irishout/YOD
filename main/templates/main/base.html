@@ -3,8 +3,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ENFANTS RICHES DÉPRIMÉS{% endblock %}</title>
+    <title>{% block title %}YEARS OD DAMAGE{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -109,6 +110,9 @@
     </style>
 </head>
 <body class="bg-white">
+    <form style="display:none;">
+    {% csrf_token %}
+    </form>
     <!-- Mobile Menu Overlay -->
     <div id="overlay" class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
     
@@ -117,8 +121,8 @@
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-lg font-bold tracking-tight">
-                    ENFANTS RICHES <br>
-                    DÉPRIMÉS
+                    YEARS OF <br>
+                    DAMAGE
                 </h2>   
                 <button id="closeMenu" class="hamburger active">
                     <span></span>
@@ -147,12 +151,12 @@
             </nav>
             
             <div class="mt-8 space-y-4">
-                <a href="#" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">SEARCH</a>
+                <a href="#" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">НАЙТИ</a>
                 <a href="#" 
                 class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
-                    ACCOUNT
+                    АККАУНТ
                 </a>
-                <a href="#" id="mobileCart" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">CART (0)</a>
+                <a href="#" id="mobileCart" class="block text-sm font-medium text-gray-900 hover:text-gray-700 py-2">КОРЗИНА (0)</a>
             </div>
         </div>
     </div>
@@ -175,8 +179,8 @@
                        hx-target="#main-content" 
                        hx-push-url="true">
                         <h1 class="text-sm sm:text-lg font-bold tracking-tight text-center">
-                            ENFANTS RICHES <br>
-                            DÉPRIMÉS
+                            YEARS OF <br>
+                            DAMAGE
                         </h1>
                     </a>
                 </div>
@@ -202,19 +206,19 @@
                                 hx-target="#mobile-search-wrapper" 
                                 hx-swap="innerHTML"
                                 class="text-sm font-medium uppercase hover:text-gray-600">
-                            SEARCH
+                            НАЙТИ
                         </button>
                     </div>
                     <a href="№" 
                     class="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
-                        ACCOUNT
+                        АККАУНТ
                     </a>
-                    <a href="#" id="desktopCart" class="text-sm font-medium text-gray-900 hover:text-gray-700">CART (0)</a>
+                    <a href="#" id="desktopCart" class="text-sm font-medium text-gray-900 hover:text-gray-700">КОРЗИНА (0)</a>
                 </div>
                 
                 <!-- Mobile Cart Icon -->
                 <div class="md:hidden">
-                    <a href="#" id="mobileCartHeader" class="text-xs font-medium text-gray-900">CART (0)</a>
+                    <a href="#" id="mobileCartHeader" class="text-xs font-medium text-gray-900">КОРЗИНА (0)</a>
                 </div>
             </div>
         </div>
@@ -235,8 +239,8 @@
             </h2>
 
             <p class="text-sm text-gray-600 max-w-xl mx-auto leading-relaxed">
-                an ode to everything that tried to break you<br>
-                and everything that made you stronger
+                ода всем жизненным трудностям и невзгодам, <br>
+                которые встречаются на нашем пути 
             </p>
 
             <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-10 max-w-2xl mx-auto">
@@ -295,7 +299,7 @@
             updateCartCount();
             
             function updateHeaderCartCount(count) {
-                const cartText = `CART (${count})`;
+                const cartText = `КОРЗИНА (${count})`;
                 if (desktopCart) desktopCart.textContent = cartText;
                 if (mobileCart) mobileCart.textContent = cartText;
                 if (mobileCartHeader) mobileCartHeader.textContent = cartText;
@@ -362,7 +366,7 @@
             const desktopCart = document.getElementById('desktopCart');
             const mobileCart = document.getElementById('mobileCart');
             const mobileCartHeader = document.getElementById('mobileCartHeader');
-            const cartText = `CART (${count})`;
+            const cartText = `КОРЗИНА (${count})`;
             
             if (desktopCart) desktopCart.textContent = cartText;
             if (mobileCart) mobileCart.textContent = cartText;

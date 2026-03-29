@@ -57,13 +57,13 @@
                     {{ product.name|upper }}
                 </h1>
                 <p class="text-lg text-gray-600 mb-4">{{ product.color|upper }}</p>
-                <p class="text-2xl font-bold text-gray-900">${{ product.price }}</p>
+                <p class="text-2xl font-bold text-gray-900">{{ product.price }} руб</p>
             </div>
 
             <!-- Sizes -->
             {% if product.product_sizes.all %}
             <div>
-                <h3 class="text-sm font-medium text-gray-900 mb-3">SIZE</h3>
+                <h3 class="text-sm font-medium text-gray-900 mb-3">РАЗМЕР</h3>
                 <div class="grid grid-cols-4 gap-2">
                     {% for product_size in product.product_sizes.all %}
                     <div class="size-option">
@@ -85,8 +85,8 @@
             </div>
             {% else %}
             <div>
-                <h3 class="text-sm font-medium text-gray-900 mb-3">SIZE</h3>
-                <p class="text-sm text-gray-600">No sizes available</p>
+                <h3 class="text-sm font-medium text-gray-900 mb-3">РАЗМЕР</h3>
+                <p class="text-sm text-gray-600">НЕТ В НАЛИЧИИ</p>
             </div>
             {% endif %}
 
@@ -96,34 +96,23 @@
                         class="w-full bg-black text-white py-3 px-6 text-sm font-medium hover:bg-gray-800 transition-colors"
                         onclick="addToCart()"
                         {% if not product.product_sizes.all %}disabled{% endif %}>
-                    ADD TO CART
+                    ДОБАВИТЬ В КОРЗИНУ
                 </button>
                 
                 <button class="w-full border border-gray-300 py-3 px-6 text-sm font-medium hover:border-gray-900 transition-colors">
-                    ADD TO WISHLIST
+                    ДОБАВИТ В ЖЕЛАЕМОЕ
                 </button>
             </div>
 
             <!-- Product Details -->
             <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-sm font-medium text-gray-900 mb-3">DETAILS</h3>
+                <h3 class="text-sm font-medium text-gray-900 mb-3">ДЕТАЛИ</h3>
                 <div class="prose prose-sm text-gray-600">
                     <p>{{ product.description|linebreaks }}</p>
-                    <p>Created: {{ product.created_at|date:"F d, Y" }}</p>
+                    <p>Добавлено: {{ product.created_at|date:"F d, Y" }}</p>
                 </div>
             </div>
 
-            <!-- Care Instructions -->
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-sm font-medium text-gray-900 mb-3">CARE</h3>
-                <div class="prose prose-sm text-gray-600">
-                    <p>Professional dry clean only</p>
-                    <p>Do not bleach</p>
-                    <p>Iron at low temperature</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Related Products -->
     {% if related_products %}
@@ -171,6 +160,7 @@
 </style>
 
 <script>
+    (function() {
     let selectedSize = null;
     let selectedSizeId = null;
 
@@ -195,7 +185,7 @@
         }
     }
 
-    function addToCart() {
+    window.addToCart = function addToCart() {
         const productSlug = '{{ product.slug }}';
         console.log('Product Slug:', productSlug);
         
@@ -215,7 +205,7 @@
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': getCookie('csrftoken')
+                'X-CSRFToken': getCSRFToken('csrftoken')
             }
         })
         .then(response => {
@@ -241,19 +231,8 @@
         });
     }
     
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+    function getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
     }
     
     function showNotification(message) {
@@ -275,6 +254,11 @@
     function initializeSizeRadios() {
         const sizeRadios = document.querySelectorAll('.size-radio');
         const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if (!addToCartBtn) {
+        console.log('Not on product page - skipping initializeSizeRadios');
+        return;
+        }
+        
         console.log('Size Radios Found:', sizeRadios.length);
 
         if (sizeRadios.length === 0) {
@@ -335,4 +319,5 @@
             this.style.transform = 'translateY(0)';
         });
     });
+    })();
 </script>

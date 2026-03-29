@@ -92,7 +92,15 @@ class AddToCartView(CartMixin, View):
         request.session.modified = True
 
         if request.headers.get('HX-Request'):
-            return redirect('cart:cart_modal')
+            # Обновляем контекст корзины
+            context = {
+                'cart': cart,
+                'cart_items': cart.items.select_related(
+                    'product',
+                    'product_size__size'
+                ).order_by('-added_at')
+            }
+            return TemplateResponse(request, 'cart/cart_modal.html', context)
         else:
             return JsonResponse({
                 'success': True,
