@@ -28,12 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECRET_KEY = os.getenv('SECRET_KEY')
 
 
-DEBUG = True  
+  
 
 # ALLOWED_HOSTS = ['kulakv.pythonanywhere.com', 'localhost', '127.0.0.1'] 
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key')
-#DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(' ') + ['*']
 
 # Настройка статических файлов
