@@ -8,8 +8,7 @@ from django.views.static import serve
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('main.urls', namespace='main')),
-    static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT),
+    path('cart/', include('cart.urls', namespace='cart')),
 ]
 
 if not settings.DEBUG:
